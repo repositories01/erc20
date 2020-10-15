@@ -38,7 +38,6 @@ function TeacherForm() {
     });
 
     setSParticipant(updatedParticipant);
-    console.log(participant);
   }
 
   function handleCreateClass(e: FormEvent) {
@@ -52,8 +51,10 @@ function TeacherForm() {
         participants: participant,
       });
 
+      console.log(res)
+
       api
-        .post('/', res)
+        .post('/sortition', res)
         .then(() => {
           alert('cadastro realizado com sucesso');
           history.push('/draw-list');
