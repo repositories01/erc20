@@ -10,6 +10,8 @@ routes.get('/sortition', SortitionController.index)
 routes.put('/sortition/user/:id', SortitionController.update)
 routes.delete('/sortition/user/:id', SortitionController.destroy)
 
+routes.post('/raffle', SortitionController.raffle)
+
 
 
 

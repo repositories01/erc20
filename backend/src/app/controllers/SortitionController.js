@@ -1,4 +1,5 @@
 import Sortition from '../models/Sortition'
+import mailer from '../../lib/Mail'
 
 class SortitionController {
   async index(req, res) {
@@ -20,7 +21,7 @@ class SortitionController {
       // req.body.participants.map(item => {
       //   names.push(item.name)
       // })
-      const data = req.body.participants.map(async (item) => {
+      const data = req.body.participants.map(async item => {
         await Sortition.create({
           name_sortition: req.body.name_sortition,
           name: item.name,
@@ -38,8 +39,6 @@ class SortitionController {
         //     ? { name_friend: names[randomIndex] }
         //     : { name_friend: names[i + 1] }
         // )
-
-    
       })
       return res.status(201).json('new draw successfully created')
     } catch (err) {
@@ -71,6 +70,37 @@ class SortitionController {
     const { id } = req.params
     await Sortition.findByIdAndDelete({ _id: id })
     return res.status(200).json('deleted successfully')
+  }
+
+  async raffle(req, res) {
+    try {
+      const { name_sortition } = req.body
+
+      // const nameSortitionExists = Sortition.find({ name_sortition })
+
+      // if (!nameSortitionExists) {
+      //   res.json('not found')
+      // }
+      const name = 'nome'
+      const name_friend = "nome-fiend"
+
+      mailer.sendMail(
+        {
+          to: 'thiagomedina.tmd@gmail.com',
+          from: 'thiagomedina001@gmail.com',
+          template: 'notification',
+          context: { name, name_friend },
+        },
+        err => {
+        console.log(err)
+        }
+        
+      )
+
+      return res.json()
+    } catch (err) {
+      console.log(err)
+    }
   }
 }
 
