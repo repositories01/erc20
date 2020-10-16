@@ -19,6 +19,10 @@
     --color-button-text: #FFFFFF;
     --color-box-base: #FFFFFF;
     --color-box-footer: #FAFAFC;
+    --color-button-edit: #d19d3b;
+    --color-button-delete: #f84d4d;
+
+
 }
 
 * {

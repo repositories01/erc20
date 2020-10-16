@@ -51,7 +51,7 @@ function TeacherForm() {
         participants: participant,
       });
 
-      console.log(res)
+      
 
       api
         .post('/sortition', res)
