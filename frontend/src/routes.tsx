@@ -9,8 +9,10 @@ function Routes() {
     return(
         <BrowserRouter>
             <Route path="/" exact component={Landing} />
-            <Route path="/draw-list" component={DrawList} />
-            <Route path="/new-draw" component={NewDrawForm} />
+            <Route path="/draw-list" exact component={DrawList} />
+            <Route path="/new-draw" exact component={NewDrawForm} />
+            <Route path= "/new-draw/:id" exact component={NewDrawForm} />
+
         </BrowserRouter>
     );
 }

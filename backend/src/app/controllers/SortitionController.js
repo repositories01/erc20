@@ -48,17 +48,37 @@ class SortitionController {
         .json({ error: 'not was possible create a new draw' })
     }
   }
+
+
   async update(req, res) {
     try {
       const { id } = req.params
-      const { name, email } = req.body
 
-      const userExists = Sortition.findById(id)
-      console.log(userExists)
-      if (userExists._id) {
+      const SortitionNameExists = await Sortition.findById({ _id: id })
+
+      if (!SortitionNameExists) {
         return res.status(401).json('user not found')
       }
+
+      const {name, email} = req.body
+
+      
+
+
       await Sortition.updateOne({ _id: id }, { name, email })
+      
+      // const updatePromises = req.body.map(e =>
+      //   Sortition.findOneAndUpdate(
+      //     { name_sortition: req.params.name_sortition },
+      //     { $set: { name: e.name, email: e.name } }
+      //   )
+      // )
+
+      // Promise.all(updatePromises)
+      //   .then(console.log)
+      //   .catch(console.error)
+
+      // const userExists = Sortition.findById(id)
       return res.status(200).json('updated successfully')
     } catch (err) {
       console.log(err)
@@ -82,7 +102,7 @@ class SortitionController {
       //   res.json('not found')
       // }
       const name = 'nome'
-      const name_friend = "nome-fiend"
+      const name_friend = 'nome-fiend'
 
       mailer.sendMail(
         {
@@ -92,9 +112,8 @@ class SortitionController {
           context: { name, name_friend },
         },
         err => {
-        console.log(err)
+          console.log(err)
         }
-        
       )
 
       return res.json()

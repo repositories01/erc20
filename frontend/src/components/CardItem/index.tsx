@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import './styles.css';
 import api from '../../services/api';
@@ -15,9 +15,13 @@ export interface ISortition {
 
 interface SortitionItemProps {
   sortition: any;
-}
+} 
 
 const CardItem: React.FC<SortitionItemProps> = ({ sortition }) => {
+  const handleDelete = useCallback(async(name) => {
+     await api.delete(`sortition/${name}`)
+     alert('exluido com sucesso') 
+  },[])
   return (
     <article className="teacher-item">
       {console.log(sortition[0].name_sortition)}
@@ -42,8 +46,8 @@ const CardItem: React.FC<SortitionItemProps> = ({ sortition }) => {
       ))}
       <footer>
         <button type="button">Fazer Sorteio</button>
-        <button type="button" className="edit"> Editar</button>
-        <button type="button" className="delete">Excluir</button>
+        <button type="button" className="edit" > Editar</button>
+        <button type="button" onClick={() => handleDelete(sortition[0].name_sortition)} className="delete">Excluir</button>
       
       </footer>
       <span>

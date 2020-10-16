@@ -1,8 +1,9 @@
-import React, { useState, FormEvent } from 'react';
-import { useHistory } from 'react-router-dom';
+import React, { useState, FormEvent, useEffect } from 'react';
+import { useHistory, useParams } from 'react-router-dom';
 
 import Input from '../../components/Input';
 import PageHeader from '../../components/PageHeader';
+import { ISortition } from '../DrawList';
 import warningIcon from '../../assets/images/icons/warning.svg';
 import { FiMinusCircle } from 'react-icons/fi';
 
@@ -12,19 +13,17 @@ import './styles.css';
 
 function TeacherForm() {
   const history = useHistory();
-
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
   const [nameSortition, setNameSortition] = useState('');
+  const { id } = useParams();
 
-  const [participant, setSParticipant] = useState([{ name: '', email: '' }]);
+  const [participant, setParticipant] = useState([{ name: '', email: '' }]);
 
   function addNewParticipant() {
-    setSParticipant([...participant, { name: '', email: '' }]);
+    setParticipant([...participant, { name: '', email: '' }]);
   }
   function removeParticipant(index: number) {
     const result = participant.filter((e, i) => i != index);
-    setSParticipant(result);
+    setParticipant(result);
   }
 
   function setParticipantValue(position: number, field: string, value: string) {
@@ -34,37 +33,47 @@ function TeacherForm() {
       }
 
       return item;
-      console.log(updatedParticipant);
     });
 
-    setSParticipant(updatedParticipant);
+    setParticipant(updatedParticipant);
   }
 
-  function handleCreateClass(e: FormEvent) {
+  async function handleCreateDraw(e: FormEvent) {
     e.preventDefault();
 
-    if (participant.length === 1 || !nameSortition) {
-      alert('preencha todos os campos e escolha mais de um participante!');
-    } else {
-      const res = Object.assign({
-        name_sortition: nameSortition,
-        participants: participant,
-      });
-
-      
-
-      api
-        .post('/sortition', res)
-        .then(() => {
-          alert('cadastro realizado com sucesso');
-          history.push('/draw-list');
-        })
-        .catch(() => {
-          alert('Erro no cadastro!');
+    try {
+      if (id) {
+        const res = await api.put(`sortition/user/${id}`, {
+          name: participant[0].name,
+          email: participant[0].email,
         });
+      } else {
+        await api.post('sortition', {
+          name_sortition: nameSortition,
+          participants: participant,
+        });
+      }
+      alert('cadastro realizado com sucesso');
+      history.push('/draw-list');
+    } catch (err) {
+      console.log(err);
+      alert('Erro no cadastro!');
     }
   }
 
+  const filterApi = async () => {
+    const response = await api.get('/sortition');
+    const user = response.data.filter((obj: ISortition) => obj._id === id);
+    console.log(user[0].name_sortition);
+    setParticipant(user);
+    setNameSortition(user[0].name_sortition);
+  };
+
+  useEffect(() => {
+    if (id) {
+      filterApi();
+    }
+  }, []);
   return (
     <div id="page-teacher-form" className="container">
       <PageHeader
@@ -73,18 +82,23 @@ function TeacherForm() {
       />
 
       <main>
-        <form onSubmit={handleCreateClass}>
+        <form onSubmit={handleCreateDraw}>
           <fieldset>
             <legend>
               Dados dos participantes
-              <button type="button" onClick={addNewParticipant}>
+              <button
+                type="button"
+                disabled={id ? true : false}
+                onClick={addNewParticipant}
+              >
                 + Novo Participante
               </button>
             </legend>
             <Input
               name="name_sortition"
               label="Nome do Sorteio"
-              value={nameSortition}
+              defaultValue={nameSortition}
+              disabled={id ? true : false}
               onChange={e => {
                 setNameSortition(e.target.value);
               }}
