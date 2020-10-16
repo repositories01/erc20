@@ -49,7 +49,7 @@ function TeacherForm() {
         });
       } else {
         await api.post('sortition', {
-          name_sortition: nameSortition,
+          name_sortition: nameSortition.replace(' ', ''),
           participants: participant,
         });
       }

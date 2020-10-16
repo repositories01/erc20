@@ -4,7 +4,6 @@ import { Link, useHistory } from 'react-router-dom';
 import PageHeader from '../../components/PageHeader';
 import warningIcon from '../../assets/images/icons/warning.svg';
 
-import CardItem from '../../components/CardItem';
 import api from '../../services/api';
 import './styles.css';
 import { FiEdit, FiTrash2 } from 'react-icons/fi';
@@ -42,6 +41,16 @@ function DrawList() {
     }
   }, []);
 
+  const handleMakeRaffle = useCallback(async nameSortition => {
+    const name = nameSortition.replace(' ', '');
+    try {
+      await api.post(`/raffle/${name}`);
+      alert('sorteio realizado com sucesso, check seu email');
+    } catch (err) {
+      console.log(err);
+      alert('erro ao fazer o sorteio');
+    }
+  }, []);
   const handleDeleteItem = useCallback(async name => {
     await api.delete(`sortition/user/${name}`);
     handleApiRequest();
@@ -55,52 +64,59 @@ function DrawList() {
       <PageHeader title="Estes são os sorteios cadastrados de Amigo Secreto." />
 
       <main>
-        {sortition
-          ? sortition.map((item, i) => (
-              <article className="teacher-item">
-                <header>
+        {sortition.length >= 1 ? (
+          sortition.map((item, i) => (
+            <article className="teacher-item">
+              <header>
+                <div>
+                  <strong>Nome do Sorteio: {item[0].name_sortition}</strong>
+                </div>
+              </header>
+
+              {item.map(e => (
+                <div key={e._id} className="content">
+                  <p>
+                    nome:
+                    <strong>{e.name} </strong>
+                  </p>
+                  <p>
+                    email:
+                    <strong> {e.email}</strong>
+                  </p>
                   <div>
-                    <strong>Nome do Sorteio: {item[0].name_sortition}</strong>
+                    <button type="button">
+                      <Link to={`/new-draw/${e._id}`}>
+                        <FiEdit style={{ height: 30 }} />
+                      </Link>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteItem(e._id)}
+                    >
+                      <FiTrash2 style={{ height: 30 }} />
+                    </button>
                   </div>
-                </header>
+                </div>
+              ))}
 
-                {item.map(e => (
-                  <div key={e._id} className="content">
-                    <p>
-                      nome:
-                      <strong>{e.name} </strong>
-                    </p>
-                    <p>
-                      email:
-                      <strong> {e.email}</strong>
-                    </p>
-                    <div>
-                      <button type="button">
-                        <Link to={`/new-draw/${e._id}`}>
-                          <FiEdit style={{ height: 30 }} />
-                        </Link>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleDeleteItem(e._id)}
-                      >
-                        <FiTrash2 style={{ height: 30 }} />
-                      </button>
-                    </div>
-                  </div>
-                ))}
-
-                <footer>
-                  <button type="button">Fazer Sorteio</button>
-                </footer>
-                <span>
-                  <img src={warningIcon} alt="Aviso importante" />
-                  Após fazer o sorteio, é enviado um email para todos os
-                  participantes com o nome do amigo secreto <br />
-                </span>
-              </article>
-            ))
-          : 'nenhum encontrado'}
+              <footer>
+                <button
+                  onClick={() => handleMakeRaffle(item[0].name_sortition)}
+                  type="button"
+                >
+                  Fazer Sorteio
+                </button>
+              </footer>
+              <span>
+                <img src={warningIcon} alt="Aviso importante" />
+                Após fazer o sorteio, é enviado um email para todos os
+                participantes com o nome do amigo secreto <br />
+              </span>
+            </article>
+          ))
+        ) : (
+          <h3>Carregando...</h3>
+        )}
       </main>
     </div>
   );
