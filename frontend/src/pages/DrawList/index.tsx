@@ -3,6 +3,7 @@ import { Link, useHistory } from 'react-router-dom';
 
 import PageHeader from '../../components/PageHeader';
 import warningIcon from '../../assets/images/icons/warning.svg';
+import load from '../../assets/images/load.svg';
 
 import api from '../../services/api';
 import './styles.css';
@@ -17,10 +18,12 @@ export interface ISortition {
 
 function DrawList() {
   const [sortition, setSortition] = useState<ISortition[][]>([]);
+  const [loading, setLoading] = useState(false);
   const history = useHistory();
 
   const handleApiRequest = useCallback(async () => {
     try {
+      setLoading(true);
       const { data } = await api.get('/sortition');
       const names = data.map((e: ISortition) => e.name_sortition);
       const nameSortition = names.filter(
@@ -38,6 +41,7 @@ function DrawList() {
     } catch (error) {
       console.log(error);
     } finally {
+      setLoading(false);
     }
   }, []);
 
@@ -64,7 +68,10 @@ function DrawList() {
       <PageHeader title="Estes são os sorteios cadastrados de Amigo Secreto." />
 
       <main>
-        {sortition.length >= 1 ? (
+        {loading ? (
+          <img className="loading" src={load} alt="" />
+        ) : 
+        sortition.length >= 1 ? (
           sortition.map((item, i) => (
             <article className="teacher-item">
               <header>
@@ -115,7 +122,7 @@ function DrawList() {
             </article>
           ))
         ) : (
-          <h3>Carregando...</h3>
+          <h3>Nenhum sorteio encontrado...</h3>
         )}
       </main>
     </div>
