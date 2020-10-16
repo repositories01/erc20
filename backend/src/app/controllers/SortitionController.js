@@ -23,6 +23,7 @@ class SortitionController {
           name_sortition: req.body.name_sortition,
           name: item.name,
           email: item.email,
+          name_friend: '',
         })
       })
       return res.status(201).json('new draw successfully created')
@@ -80,32 +81,43 @@ class SortitionController {
 
       const data = nameSortition.map(async (item, i) => {
         const randomIndex = Math.floor(Math.random() * names.length)
+        const otherIndex = Math.floor(Math.random() * names.length)
 
         const obj = Object.assign(
           item.name != names[randomIndex]
             ? { name_friend: names[randomIndex] }
-            : { name_friend: names[i + 1] }
+            : { name_friend: names[otherIndex] }
         )
 
-        await Sortition.update({ _id: item.id }, { $set: obj })
+        await Sortition.updateOne({ _id: item.id }, { $set: obj })
+
         return obj
       })
 
-      
+      const emailName = await Sortition.find({
+        name_sortition,
+      })
+
+      emailName.map(e => {
+        const { name, email, name_friend } = e
+        
+        mailer.sendMail(
+          {
+            to: email,
+            from: 'thiagomedina001@gmail.com',
+            template: 'notification',
+            context: { name, name_friend },
+          },
+          err => {
+            if (err) {
+              console.log(err)
+            }
+          }
+        )
+      })
+
       // const name = 'nome'
       // const name_friend = 'nome-fiend'
-
-      // mailer.sendMail(
-      //   {
-      //     to: 'thiagomedina.tmd@gmail.com',
-      //     from: 'thiagomedina001@gmail.com',
-      //     template: 'notification',
-      //     context: { name, name_friend },
-      //   },
-      //   err => {
-      //     console.log(err)
-      //   }
-      // )
 
       return res.status(200).json('ok')
     } catch (err) {
