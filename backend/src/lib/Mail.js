@@ -1,16 +1,18 @@
+import 'dotenv/config'
+
 import nodemailer from 'nodemailer'
 import { resolve } from 'path'
 import exphbs from 'express-handlebars'
 import nodemailerhbs from 'nodemailer-express-handlebars'
-import mailConfig from '../config/mail'
-
-const { host, port, secure, user, pass } = mailConfig
 
 const transporter = nodemailer.createTransport({
-  host,
-  port,
-  secure,
-  auth: { user, pass },
+  host: process.env.MAIL_HOST,
+  port: process.env.MAIL_PORT,
+  secure: false,
+  auth: {
+    user: process.env.MAIL_USER,
+    pass: process.env.MAIL_PASS,
+  },
 })
 
 const viewPath = resolve(__dirname, '..', 'app', 'views', 'emails')

@@ -104,7 +104,7 @@ class SortitionController {
         mailer.sendMail(
           {
             to: email,
-            from: 'thiagomedina001@gmail.com',
+            from: 'contato@thiagomedina.me',
             template: 'notification',
             context: { name, name_friend },
           },
@@ -116,12 +116,11 @@ class SortitionController {
         )
       })
 
-      // const name = 'nome'
-      // const name_friend = 'nome-fiend'
-
-      return res.status(200).json('ok')
+      return res.status(201).json('Sent successfully')
     } catch (err) {
       console.log(err)
+      return res.status(400).json('It was not possible to send the email')
+
     }
   }
 }
