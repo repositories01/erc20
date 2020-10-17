@@ -79,18 +79,17 @@ class SortitionController {
         names.push(item.name)
       })
 
-      const data = nameSortition.map(async (item, i) => {
+      nameSortition.map(async (item, i) => {
         const randomIndex = Math.floor(Math.random() * names.length)
         const otherIndex = Math.floor(Math.random() * names.length)
 
         const obj = Object.assign(
-          item.name != names[randomIndex]
-            ? { name_friend: names[randomIndex] }
-            : { name_friend: names[otherIndex] }
+          item.name === names[randomIndex]
+            ? { name_friend: names.splice(randomIndex, 1) }
+            : { name_friend: names[randomIndex] }
         )
 
         await Sortition.updateOne({ _id: item.id }, { $set: obj })
-
         return obj
       })
 
@@ -100,7 +99,7 @@ class SortitionController {
 
       emailName.map(e => {
         const { name, email, name_friend } = e
-        
+
         mailer.sendMail(
           {
             to: email,
@@ -116,11 +115,10 @@ class SortitionController {
         )
       })
 
-      return res.status(201).json('Sent successfully')
+      return res.status(201).json( 'Sent successfully' )
     } catch (err) {
       console.log(err)
       return res.status(400).json('It was not possible to send the email')
-
     }
   }
 }
