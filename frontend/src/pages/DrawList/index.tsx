@@ -29,7 +29,7 @@ function DrawList() {
       const nameSortition = names.filter(
         (name: string, i: number) => names.indexOf(name) === i,
       );
-
+  
       let arr: ISortition[][] = [];
       nameSortition.forEach((e: string) => {
         const res = data.filter((val: ISortition, i: number) => {
@@ -38,6 +38,7 @@ function DrawList() {
         arr.push(res);
       });
       setSortition(arr);
+      console.log(arr)
     } catch (error) {
       console.log(error);
     } finally {

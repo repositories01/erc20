@@ -109,13 +109,13 @@ class SortitionController {
           },
           err => {
             if (err) {
-              console.log(err)
+              console.log(err + 'aqui dentro')
             }
           }
         )
       })
 
-      return res.status(201).json( 'Sent successfully' )
+      return res.status(201).json('Sent successfully')
     } catch (err) {
       console.log(err)
       return res.status(400).json('It was not possible to send the email')

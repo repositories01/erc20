@@ -11,10 +11,14 @@ import api from '../../services/api';
 
 import './styles.css';
 
+export interface IUserPublicProfileRouteParams {
+  id: string;
+}
+
 function TeacherForm() {
   const history = useHistory();
   const [nameSortition, setNameSortition] = useState('');
-  const { id } = useParams();
+  const { id } = useParams<IUserPublicProfileRouteParams>();
 
   const [participant, setParticipant] = useState([{ name: '', email: '' }]);
 

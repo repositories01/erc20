@@ -12,7 +12,6 @@ function Routes() {
             <Route path="/draw-list" exact component={DrawList} />
             <Route path="/new-draw" exact component={NewDrawForm} />
             <Route path= "/new-draw/:id" exact component={NewDrawForm} />
-
         </BrowserRouter>
     );
 }
