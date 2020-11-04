@@ -30,14 +30,5 @@ transporter.use(
     extName: '.hbs',
   })
 )
-//         viewEngine: exphbs.create({
-//           layoutsDir: resolve(viewPath, 'layout'),
-//           partialsDir: resolve(viewPath, 'partials'),
-//           defaultLayout: 'default',
-//           extname: '.hbs',
-//         }),
-//         viewPath,
-//         extName: '.hbs',
-//       })
-export default transporter
 
+export default transporter

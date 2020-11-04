@@ -81,7 +81,6 @@ class SortitionController {
 
       nameSortition.map(async (item, i) => {
         const randomIndex = Math.floor(Math.random() * names.length)
-        const otherIndex = Math.floor(Math.random() * names.length)
 
         const obj = Object.assign(
           item.name === names[randomIndex]
@@ -97,8 +96,8 @@ class SortitionController {
         name_sortition,
       })
 
-      emailName.map(e => {
-        const { name, email, name_friend } = e
+      emailName.map(item => {
+        const { name, email, name_friend } = item
 
         mailer.sendMail(
           {
@@ -109,7 +108,7 @@ class SortitionController {
           },
           err => {
             if (err) {
-              console.log(err + 'aqui dentro')
+              console.log(err)
             }
           }
         )
